@@ -1,0 +1,82 @@
+[project]
+name = "frontier-dental"
+version = "0.1.0"
+description = "Agent-based scraping prototype for Safco Dental Supply (take-home POC)"
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "playwright>=1.49.0",
+    "httpx>=0.28.0",
+    "selectolax>=0.3.27",
+    "pydantic>=2.10.0",
+    "pydantic-settings>=2.7.0",
+    "tenacity>=9.0.0",
+    "openai>=1.59.0",
+    "langchain-core>=0.3.0",
+    "langchain-openai>=0.2.0",
+    "langchain-community>=0.3.0",
+    "langgraph>=0.2.50",
+    "beautifulsoup4>=4.12.0",
+    "lxml>=5.0.0",
+    "python-dotenv>=1.0.1",
+    "structlog>=24.4.0",
+    "click>=8.1.7",
+]
+
+[project.scripts]
+frontier-dental = "frontier_dental.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/frontier_dental"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.24.0",
+    "pytest-cov>=6.0.0",
+    "pytest-mock>=3.14.0",
+    "respx>=0.22.0",
+    "ruff>=0.8.0",
+    "black>=24.10.0",
+    "mypy>=1.13.0",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+markers = [
+    "unit: fast, isolated unit tests",
+    "integration: tests that hit local fixtures or in-process integrations",
+    "network: tests that require live network (skipped by default)",
+]
+addopts = "-ra --strict-markers -m 'not network'"
+
+[tool.coverage.run]
+source = ["src/frontier_dental"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
+ignore = ["E501"]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_unused_ignores = true
+plugins = ["pydantic.mypy"]
