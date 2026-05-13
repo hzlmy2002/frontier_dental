@@ -1,0 +1,16 @@
+playwright>=1.49.0
+httpx>=0.28.0
+selectolax>=0.3.27
+pydantic>=2.10.0
+pydantic-settings>=2.7.0
+tenacity>=9.0.0
+openai>=1.59.0
+langchain-core>=0.3.0
+langchain-openai>=0.2.0
+langchain-community>=0.3.0
+langgraph>=0.2.50
+beautifulsoup4>=4.12.0
+lxml>=5.0.0
+python-dotenv>=1.0.1
+structlog>=24.4.0
+click>=8.1.7

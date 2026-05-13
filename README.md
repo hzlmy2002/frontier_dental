@@ -35,6 +35,13 @@ uv sync                                # installs deps into .venv
 uv run playwright install chromium     # required for Navigator + Tier 2
 cp .env.example .env                   # fill in VLLM_BASE_URL, etc.
 
+# 1b. Or, with plain pip (no uv):
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt        # runtime deps
+pip install -r requirements-dev.txt    # adds pytest, ruff, black, mypy
+playwright install chromium
+cp .env.example .env
+
 # 2. Run one of these:
 
 # (a) Default — deterministic static category discovery.
@@ -337,5 +344,7 @@ tests/               # fixtures + unit tests for every module
 output/              # pre-baked sample: products.{sqlite,csv,json}
 main.py              # entry-point shim → frontier_dental.cli:main
 .env.example
-pyproject.toml
+pyproject.toml       # source of truth for dependencies (uv / pip / build)
+requirements.txt     # runtime deps, mirrored from pyproject for plain pip
+requirements-dev.txt # dev/test deps (includes -r requirements.txt)
 ```
