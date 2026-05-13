@@ -72,7 +72,7 @@ uv run main.py run
 uv run main.py run --intent "i want Sutures & surgical products and gloves"
 
 # (c) Skip discovery — explicit slugs
-uv run main.py run --category hemostatics-retraction --category sutures-surgical-products
+uv run main.py run --category gloves --category sutures-surgical-products
 
 # (d) Skip Tier 2 Playwright extraction fallback
 uv run main.py run --no-playwright
@@ -82,8 +82,8 @@ uv run main.py status                  # crawl-state + product counts
 uv run main.py export --format both    # CSV + JSON
 ```
 
-The committed sample in [output/](output/) contains **101 products** from
-`hemostatics-retraction` and `sutures-surgical-products`: **100% Tier 1
+The committed sample in [output/](output/) contains **157 products** from
+`gloves` and `sutures-surgical-products`: **100% Tier 1
 JSON-LD**, with no observed LLM fallback and no observed Tier 2 Playwright
 extraction for those records.
 
