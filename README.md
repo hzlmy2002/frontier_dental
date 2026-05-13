@@ -25,6 +25,26 @@ validated records persisted to SQLite with SKU-keyed upserts.
 
 ## Quick start
 
+> **AI agent features require an OpenAI-compatible API.** The `--intent`
+> Navigator (LangGraph ReAct) and the Tier 3 LLM extractor both call an
+> OpenAI-compatible chat-completions endpoint. You **must** provide one —
+> either OpenAI itself, or any compatible server (vLLM, llama.cpp,
+> Ollama's OpenAI shim, OpenRouter, Together, etc.). Configure the
+> endpoint and key in `.env` (or as environment variables) before
+> running with `--intent` or relying on Tier 3 fallback:
+>
+> ```bash
+> # .env (or exported in your shell)
+> VLLM_BASE_URL=https://api.openai.com/v1   # or your compatible server
+> VLLM_API_KEY=sk-...                       # required by the server
+> VLLM_MODEL=gpt-4o-mini                    # any chat-completions model
+> ```
+>
+> The default deterministic run (`uv run main.py run` with no `--intent`)
+> works without an API as long as Tier 1 JSON-LD covers every product —
+> which is the case for the committed sample. Without an API key, any
+> product that falls through to Tier 3 will be marked `FAILED`.
+
 ```bash
 # 0. Look at the pre-baked sample first — no setup required.
 cat output/products.json | head        # 101 products, all Tier 1 JSON-LD
@@ -320,6 +340,21 @@ set so the judge's biases stay visible.
   finish in a handful of calls. Smaller open-weight models may need more
   steps (`NAVIGATOR_MAX_STEPS`) or a fallback to `StaticCategoryDiscoverer`
   / explicit `--category` slugs.
+- **Site structure changes will break the pipeline.** Tier 1 / Tier 2
+  extraction relies on Safco's current JSON-LD shape, `window.masterData`,
+  and the inline Algolia config block in `/catalog/<slug>` HTML. If Safco
+  restructures the storefront — moves JSON-LD, renames the Algolia config
+  variable, changes URL shapes (`/catalog/`, `/product/`), or swaps the
+  Magento/Vue/Algolia stack — discovery, listing, and extraction will all
+  fail until the selectors and parsers are updated. Tier 3 LLM may absorb
+  some drift on individual product detail pages, but is not a substitute
+  for repairing the deterministic tiers.
+- **No CAPTCHA / anti-bot bypass.** The pipeline does not solve CAPTCHAs,
+  rotate fingerprints, or evade WAF challenges. If Safco enables
+  Cloudflare Turnstile, hCaptcha, reCAPTCHA, a JS challenge page, or any
+  bot-detection layer, both `httpx` requests and Playwright navigations
+  will start returning challenge pages instead of product HTML and the
+  crawl will fail. Solving anti-bot is out of scope for this POC.
 
 ---
 
